@@ -44,6 +44,12 @@ public class Server {
         }
     }
 
+    public synchronized void broadcastMessageToUser(List<ClientHandler> clients, String message) {
+        for (ClientHandler client : clients) {
+            client.sendMessage(message);
+        }
+    }
+
     public synchronized void unsubscribe(ClientHandler clientHandler) {
         clients.remove(clientHandler);
         broadcastMessage("Клиент: " + clientHandler.getUsername() + " вышел из чата");
@@ -59,5 +65,15 @@ public class Server {
                 .map(ClientHandler::getUsername)
 //                .map(client -> client.getUsername())
                 .collect(Collectors.toList());
+    }
+
+    public synchronized List<ClientHandler> getUserListByUsername(String username) {
+        List<ClientHandler> clientList = new ArrayList<>();
+        for (ClientHandler client : clients) {
+            if (client.getUsername().equals(username)) {
+                clientList.add(client);
+            }
+        }
+        return clientList;
     }
 }

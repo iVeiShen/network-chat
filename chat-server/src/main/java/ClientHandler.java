@@ -97,6 +97,9 @@ public class ClientHandler {
                             String.join(", ", userList);
 //                            userList.stream().collect(Collectors.joining(","));
                     sendMessage(joinedUsers);
+                } else if (message.startsWith("/w ")) {
+                    String[] args = message.split(" ");
+                    server.broadcastMessageToUser(server.getUserListByUsername(args[1]), args[2]);
                 }
             } else {
                 server.broadcastMessage("Server: " + message);

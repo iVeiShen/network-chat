@@ -52,7 +52,9 @@ public class Server {
                     broadcastMessage("Пользователь " + username + " кикнут из чата.");
                 }
             }
-          
+        }
+    }
+
     public synchronized void broadcastMessageToUser(List<ClientHandler> clients, String message) {
         for (ClientHandler client : clients) {
             client.sendMessage(message);

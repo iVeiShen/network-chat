@@ -114,6 +114,9 @@ public class ClientHandler {
                         String[] args = message.split(" ");
                         server.kickUser(args[1]);
                     }
+                } else if (message.startsWith("/w ")) {
+                    String[] args = message.split(" ");
+                    server.broadcastMessageToUser(server.getUserListByUsername(args[1]), args[2]);
                 }
             } else {
                 server.broadcastMessage("Server: " + message);

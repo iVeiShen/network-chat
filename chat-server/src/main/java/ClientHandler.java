@@ -13,10 +13,16 @@ public class ClientHandler {
 
     private String username;
 
+    private UserRole userRole;
+
     private static int userCount = 0;
 
     public String getUsername() {
         return username;
+    }
+
+    public UserRole getUserRole() {
+        return userRole;
     }
 
     public ClientHandler(Socket socket, Server server) throws IOException {
@@ -50,10 +56,12 @@ public class ClientHandler {
                     String login = args[1];
                     String password = args[2];
                     String username = server.getAuthenticationProvider().getUsernameByLoginAndPassword(login, password);
+
                     if (username == null || username.isBlank()) {
                         sendMessage("Указан неверный логин/пароль");
                     } else {
                         this.username = username;
+                        this.userRole = server.getAuthenticationProvider().getUserRoleByLogin(login);
                         sendMessage(username + ", добро пожаловать в чат!");
                         server.subscribe(this);
                         isAuthenticated = true;
@@ -69,6 +77,9 @@ public class ClientHandler {
                         sendMessage("Указанный логин/никнейм уже заняты");
                     } else {
                         this.username = nick;
+                        System.out.println(login);
+                        System.out.println(server.getAuthenticationProvider().getUserRoleByLogin(login).getDescription());
+                        this.userRole = server.getAuthenticationProvider().getUserRoleByLogin(login);
                         sendMessage(nick + ", добро пожаловать в чат!");
                         server.subscribe(this);
                         isAuthenticated = true;
@@ -97,6 +108,12 @@ public class ClientHandler {
                             String.join(", ", userList);
 //                            userList.stream().collect(Collectors.joining(","));
                     sendMessage(joinedUsers);
+                } else if (message.startsWith("/kick ")) {
+                    if (userRole == UserRole.ADMIN) {
+                        System.out.println("1");
+                        String[] args = message.split(" ");
+                        server.kickUser(args[1]);
+                    }
                 } else if (message.startsWith("/w ")) {
                     String[] args = message.split(" ");
                     server.broadcastMessageToUser(server.getUserListByUsername(args[1]), args[2]);

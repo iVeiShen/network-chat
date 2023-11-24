@@ -44,6 +44,15 @@ public class Server {
         }
     }
 
+    public synchronized void kickUser(String username) {
+        for (ClientHandler clientHandler : clients) {
+            if (clientHandler.getUsername().equals(username)) {
+                if (clientHandler.getUserRole().equals(UserRole.USER)) {
+                    clients.remove(clientHandler);
+                    broadcastMessage("Пользователь " + username + " кикнут из чата.");
+                }
+            }
+          
     public synchronized void broadcastMessageToUser(List<ClientHandler> clients, String message) {
         for (ClientHandler client : clients) {
             client.sendMessage(message);
